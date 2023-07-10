@@ -2,7 +2,6 @@ package org.example.model;
 
 import lombok.Data;
 
-import java.util.Date;
 
 @Data
 public class Holiday {
