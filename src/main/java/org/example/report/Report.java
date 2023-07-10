@@ -7,18 +7,11 @@ import net.sf.dynamicreports.report.constant.VerticalImageAlignment;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-import org.example.dao.HolidayDAO;
 import org.example.model.Holiday;
 import org.example.service.Parser;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
@@ -56,7 +49,7 @@ public class Report {
                             col.column("name", "name", type.stringType()))
                     .setColumnStyle(columnTitleStyle)
                     .pageFooter((cmp.pageXofY()))
-                    .setDataSource(createDataSourceFromJRResultSet())
+                    .setDataSource(createDataSourceFromJRBean())
                     .show();
         } catch (DRException exception) {
             exception.printStackTrace();
@@ -70,23 +63,8 @@ public class Report {
         JRBeanCollectionDataSource collectionDataSource = new JRBeanCollectionDataSource(list);
         return collectionDataSource;
     }
-    private JRDataSource createDataSourceFromJRResultSet() throws Exception{
-        ResultSet resultSet = HolidayDAO.getHolidaysFromTable();
-        JRResultSetDataSource resultSetDataSource = new JRResultSetDataSource(resultSet);
-        return resultSetDataSource;
-    }
 
-    private JRDataSource createDataSourceFromJRMap() throws Exception {
-        List<Holiday> list = Parser.parse();
-        List<Map<String,?>> maps = new ArrayList<>();
-        for(Holiday holiday : list){
-            Map<String,String> map = new HashMap<>();
-            map.put("country",holiday.getCountry());
-            map.put("date",holiday.getDate());
-            map.put("name",holiday.getName());
-            maps.add(map);
-        }
-        JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(maps);
-        return dataSource;
+    public static void main(String[] args) {
+        new Report();
     }
 }
