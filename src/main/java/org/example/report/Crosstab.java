@@ -9,16 +9,17 @@ import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.dynamicreports.report.exception.DRException;
 import org.example.model.Holiday;
 import org.example.service.Parser;
+import org.example.service.ParserImpl;
 
 import java.util.List;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
 public class Crosstab {
-    public Crosstab() throws DRException {
+    private Parser parser;
+    public Crosstab() {
         build();
     }
     StyleBuilder crosstabStyle = stl.style()
@@ -30,7 +31,6 @@ public class Crosstab {
         CrosstabRowGroupBuilder<String> rowGroup = ctab.rowGroup("country", String.class);
         CrosstabColumnGroupBuilder<String> columnGroup = ctab.columnGroup("month", String.class);
         CrosstabBuilder crosstab = ctab.crosstab()
-                /*.headerCell(cmp.text("Header"))*/
                 .rowGroups(rowGroup)
                 .columnGroups(columnGroup.setHeaderStyle(crosstabStyle))
                 .measures(ctab.measure( "name", String.class, Calculation.COUNT).setStyle(crosstabStyle))
@@ -48,7 +48,8 @@ public class Crosstab {
     }
     private DRDataSource createDataSource() throws Exception {
         DRDataSource dataSource = new DRDataSource("country","month","name");
-        List<Holiday> holidays = Parser.parse();
+        parser = new ParserImpl();
+        List<Holiday> holidays = parser.parseFromXML();
         for(Holiday holiday : holidays){
             String country = holiday.getCountry();
             String[] temp = holiday.getDate().split("/");
@@ -59,7 +60,7 @@ public class Crosstab {
         return dataSource;
     }
 
-    public static void main(String[] args) throws DRException {
+    public static void main(String[] args){
         new Crosstab();
     }
 
