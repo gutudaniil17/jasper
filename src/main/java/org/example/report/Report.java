@@ -7,18 +7,12 @@ import net.sf.dynamicreports.report.constant.VerticalImageAlignment;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.example.model.Holiday;
-import org.example.service.Parser;
-
-import java.util.List;
+import org.example.constants.FilePaths;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
 public class Report {
-    public Report() {
-        build();
-    }
+    private ReportJRXML reportJRXML;
 
     StyleBuilder columnTitleStyle = stl.style()
             .setBorder(stl.pen1Point())
@@ -38,7 +32,7 @@ public class Report {
         try {
             report()
                     .title(cmp.text("Holidays").setStyle(titleStyle),
-                            cmp.image("src/main/resources/cedacri.png")
+                            cmp.image(FilePaths.CEADCRI_PNG)
                                     .setStyle(titleStyle)
                                     .setHeight(60)
                                     .setWidth(80))
@@ -57,11 +51,12 @@ public class Report {
             throw new RuntimeException(e);
         }
     }
-
+    public Report() {
+        build();
+    }
     private JRDataSource createDataSourceFromJRBean() throws Exception {
-        List<Holiday> list = Parser.parse();
-        JRBeanCollectionDataSource collectionDataSource = new JRBeanCollectionDataSource(list);
-        return collectionDataSource;
+        reportJRXML = new ReportJRXMLImpl();
+        return reportJRXML.createDataSourceFromJRResultSet();
     }
 
     public static void main(String[] args) {

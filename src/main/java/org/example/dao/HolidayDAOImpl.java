@@ -1,21 +1,24 @@
 package org.example.dao;
 
+import org.example.constants.DatabaseConnectionStrings;
 import org.example.model.Holiday;
 
 import java.sql.*;
 import java.util.List;
 
-public class HolidayDAO {
-    private static Connection connection;
+public class HolidayDAOImpl implements HolidayDao {
+    private Connection connection;
 
-    public static void connect() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/mydb";
-        String username = "root";
-        String password = "root";
+    @Override
+    public void connect() throws SQLException {
+        String url = DatabaseConnectionStrings.URL;
+        String username = DatabaseConnectionStrings.USERNAME;
+        String password = DatabaseConnectionStrings.PASSWORD;
         connection = DriverManager.getConnection(url, username, password);
     }
 
-    public static void addHolidays(List<Holiday> holidays) throws SQLException {
+    @Override
+    public void addHolidays(List<Holiday> holidays) throws SQLException {
         String sql = "INSERT INTO holidays (country, date, name) VALUES (?, ?, ?)";
         connect();
         PreparedStatement statement = null;
@@ -34,7 +37,8 @@ public class HolidayDAO {
         }
     }
 
-    public static ResultSet getHolidaysFromTable() throws SQLException {
+    @Override
+    public ResultSet getHolidaysFromTable() throws SQLException {
         String sql = "select * from holidays";
         connect();
         Statement statement = connection.createStatement();

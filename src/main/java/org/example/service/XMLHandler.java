@@ -2,9 +2,8 @@ package org.example.service;
 
 import org.example.model.Holiday;
 import org.example.model.Year;
-import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class XMLHandler extends DefaultHandler {
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
         currentElement = qName;
         if (qName.equalsIgnoreCase("Year-2021")) {
             year = new Year();
@@ -32,7 +31,7 @@ public class XMLHandler extends DefaultHandler {
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    public void characters(char[] ch, int start, int length) {
         String value = new String(ch, start, length).trim();
         if (value.isEmpty()) {
             return;
@@ -48,7 +47,7 @@ public class XMLHandler extends DefaultHandler {
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
+    public void endElement(String uri, String localName, String qName) {
         if (qName.equalsIgnoreCase("holydays")) {
             holidays.add(currentHoliday);
             currentHoliday = null;

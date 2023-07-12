@@ -7,12 +7,18 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.exception.DRException;
 import org.example.model.Holiday;
 import org.example.service.Parser;
+import org.example.service.ParserImpl;
 
 import java.util.List;
 
 public class BarChart {
-    public static void main(String[] args) {
-        // Create a bar chart builder
+    private Parser parser;
+
+    public BarChart() {
+        build();
+    }
+
+    private void build() {
         BarChartBuilder barChart = DynamicReports.cht.barChart();
 
         // Define the data source
@@ -24,7 +30,6 @@ public class BarChart {
         }
 
         // Define the columns
-        /*TextColumnBuilder<String> countryColumn = DynamicReports.col.column("Country", "country", String.class);*/
         TextColumnBuilder<String> monthColumn = DynamicReports.col.column("Month", "month", String.class);
         TextColumnBuilder<Integer> nameColumn = DynamicReports.col.column("Name", "name", Integer.class);
 
@@ -43,17 +48,21 @@ public class BarChart {
         }
     }
 
-    private static DRDataSource createDataSource() throws Exception {
+    private DRDataSource createDataSource() throws Exception {
         DRDataSource dataSource = new DRDataSource("month", "name");
-        List<Holiday> holidays = Parser.parse();
-        for(Holiday holiday : holidays){
-            String country = holiday.getCountry();
+        parser = new ParserImpl();
+        List<Holiday> holidays = parser.parseFromXML();
+        for (Holiday holiday : holidays) {
             String[] temp = holiday.getDate().split("/");
-            String  month = temp[1];
+            String month = temp[1];
             int name = 1;
-            dataSource.add(month,name);
+            dataSource.add(month, name);
         }
         return dataSource;
+    }
+
+    public static void main(String[] args) {
+        new BarChart();
     }
 }
 

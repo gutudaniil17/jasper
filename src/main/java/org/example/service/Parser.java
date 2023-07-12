@@ -1,21 +1,13 @@
 package org.example.service;
 
 import org.example.model.Holiday;
-import org.example.model.Year;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-public class Parser {
-    public static List<Holiday> parse() throws Exception {
-        File file = new File("C:\\Users\\crme039\\gutuprojects\\jasper\\src\\main\\resources\\MyDataBase.xml");
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        SAXParser parser = factory.newSAXParser();
-        XMLHandler handler = new XMLHandler();
-        parser.parse(file, handler);
-        Year year = handler.getYear();
-        return year.getHolidays();
-    }
+public interface Parser {
+    List<Holiday> parseFromXML() throws Exception;
+    void parseToJson(List<Holiday> list,File file) throws IOException;
+    List<Holiday> readFromJson(File file) throws IOException;
 }
